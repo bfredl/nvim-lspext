@@ -1,11 +1,10 @@
 local a = vim.api
+local client = require('lsp.plugin').client
 i = require('inspect')
 if the_id == nil then
     the_id = a.nvim_buf_add_highlight(0, 0, "", 0, 0, 0)
 end
 function myhandler(success,data)
-    ts = success
-    td = data
     a.nvim_buf_clear_highlight(0, the_id, 0, -1)
     if not success then
       return
@@ -26,6 +25,22 @@ function myhandler(success,data)
       end
       a.nvim_buf_set_eol_text(0, the_id, kind, range.start.line, '  ▶ '..msg.message)
     end
-
 end
+
+function on_signature(success,data)
+    ts = success
+    td = data
+    if #data.signatures > 0 then
+        -- TODO: activeSignature
+        local sig = data.signatures[1]
+        _thesig = sig.label
+        a.nvim_command("echo luaeval('_thesig')")
+    end
+end
+
+function lsptest_signature()
+    client.request_async("textDocument/signatureHelp", {}, on_signature, nil)
+end
+
+
 require('lsp.callbacks').callbacks.textDocument.publishDiagnostics = myhandler
