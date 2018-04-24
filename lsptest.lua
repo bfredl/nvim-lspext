@@ -4,7 +4,14 @@ i = require('inspect')
 if the_id == nil then
     the_id = a.nvim_buf_add_highlight(0, 0, "", 0, 0, 0)
 end
+if the_old == nil then
+    the_old = require('lsp.callbacks').callbacks.textDocument.publishDiagnostics
+end
+
 function myhandler(success,data)
+    if the_old ~= nil then
+      pcall(the_old,success,data)
+    end
     a.nvim_buf_clear_highlight(0, the_id, 0, -1)
     if not success then
       return
