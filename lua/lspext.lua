@@ -39,7 +39,7 @@ local function on_diagnostics(success, data)
       else
         msg_hl = "LspOtherMsg"
       end
-      a.nvim_buf_set_eol_text(0, my_ns, msg_hl, range.start.line, '  ▶ '..msg.message)
+      a.nvim_buf_set_eol_text(0, my_ns, range.start.line, {{'▶ '..msg.message, msg_hl}})
     else
       -- FIXME: set_eol_text has a bug that a highlight at $ will "bleed" into the
       -- after-eol message, so disable this when eol_text is used
