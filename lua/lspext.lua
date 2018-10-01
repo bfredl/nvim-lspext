@@ -1,6 +1,6 @@
 local a = vim.api
 local client = require'lsp.plugin'.client
---i = require('inspect')
+--i = require'inspect'
 
 -- TODO: use named namespaces for safe reloading
 if __lspext_ns == nil then
@@ -30,7 +30,7 @@ local function on_diagnostics(success, data)
     end
     last_line, last_severity = range.start.line, msg.severity
 
-    if a.nvim_buf_set_eol_text ~= nil then
+    if a.nvim_buf_set_virtual_text ~= nil then
       local msg_hl
       if msg.severity == MessageType.Error then
         msg_hl = "LspError"
@@ -39,7 +39,7 @@ local function on_diagnostics(success, data)
       else
         msg_hl = "LspOtherMsg"
       end
-      a.nvim_buf_set_eol_text(0, my_ns, range.start.line, {{'▶ '..msg.message, msg_hl}})
+      a.nvim_buf_set_virtual_text(0, my_ns, range.start.line, {{'▶ '..msg.message, msg_hl}}, {})
     else
       -- FIXME: set_eol_text has a bug that a highlight at $ will "bleed" into the
       -- after-eol message, so disable this when eol_text is used
